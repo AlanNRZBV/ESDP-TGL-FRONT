@@ -1,7 +1,0 @@
-.git
-node_modules
-public/*
-.eslintrc.json
-.prettierrc
-nodemon.json
-tsconfig.json
