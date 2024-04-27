@@ -1,6 +1,6 @@
 import { GlobalError, ValidationError } from '../../types/types';
 import { createSlice } from '@reduxjs/toolkit';
-import { login, logOut, register } from './usersThunks';
+import {login, logOut, register, update} from './usersThunks';
 import { RootState } from '../../app/store';
 import { User } from '../../types/types.User';
 
@@ -74,6 +74,19 @@ export const usersSlice = createSlice({
       })
       .addCase(logOut.rejected, (state) => {
         state.logOutLoading = false;
+      });
+
+    builder
+      .addCase(update.pending, (state) => {
+        state.loginLoading = true;
+        state.loginError = null;
+      })
+      .addCase(update.fulfilled, (state, { payload: data }) => {
+        state.loginLoading = false;
+        state.user = data.user;
+      })
+      .addCase(update.rejected, (state) => {
+        state.loginLoading = false;
       });
   },
 });

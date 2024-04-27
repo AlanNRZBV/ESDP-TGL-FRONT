@@ -16,7 +16,7 @@ const Profile = () => {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     middleName: user?.middleName || '',
-    region: user?.region._id || '',
+    region: user?.region?._id || '',
     settlement: user?.settlement || '',
     address: user?.address || '',
   });
