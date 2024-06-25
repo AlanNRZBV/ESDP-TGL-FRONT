@@ -16,7 +16,6 @@ import {
 import ClientsItem from '../components/ClientsItem';
 import React, { useEffect, useState } from 'react';
 import { fetchClients, fetchSingleClient } from '../usersThunks';
-import ClientsTable from '../components/ClientsTable';
 import { LoadingButton } from '@mui/lab';
 import TablePaginationActions from '../../shipments/components/TablePaginationActions';
 
@@ -54,6 +53,13 @@ const Clients = () => {
     });
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const clearFilter = async () => {
     setMarketId('');
     setSearched(false);
@@ -66,12 +72,14 @@ const Clients = () => {
   ) => {
     event?.preventDefault();
     setPage(newPage);
+    scrollToTop();
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
+    scrollToTop();
     setPage(0);
   };
 
@@ -127,21 +135,19 @@ const Clients = () => {
       ) : singleState && searched ? (
         <Box mb={4} pb={3} borderBottom="1px solid grey">
           <Typography gutterBottom>Результат поиска</Typography>
-          <ClientsTable>
-            <ClientsItem
-              _id={singleState._id}
-              marketId={singleState?.marketId}
-              email={singleState?.email}
-              pupID={singleState?.pupID}
-              firstName={singleState?.firstName}
-              lastName={singleState?.lastName}
-              middleName={singleState?.middleName}
-              phoneNumber={singleState?.phoneNumber}
-              region={singleState?.region}
-              settlement={singleState?.settlement}
-              address={singleState?.address}
-            />
-          </ClientsTable>
+          <ClientsItem
+            _id={singleState._id}
+            marketId={singleState?.marketId}
+            email={singleState?.email}
+            pupID={singleState?.pupID}
+            firstName={singleState?.firstName}
+            lastName={singleState?.lastName}
+            middleName={singleState?.middleName}
+            phoneNumber={singleState?.phoneNumber}
+            region={singleState?.region}
+            settlement={singleState?.settlement}
+            address={singleState?.address}
+          />
         </Box>
       ) : (
         <></>
@@ -150,7 +156,7 @@ const Clients = () => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <ClientsTable>
+        <>
           {paginatedClients.map((item) => (
             <ClientsItem
               _id={item._id}
@@ -167,7 +173,7 @@ const Clients = () => {
               address={item.address}
             />
           ))}
-        </ClientsTable>
+        </>
       )}
       <TablePagination
         component="div"

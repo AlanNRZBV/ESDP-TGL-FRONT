@@ -91,7 +91,7 @@ const StaffItem: React.FC<Props> = ({ user, onSubmit, onDelete }) => {
                 <TableCell align="left">{user.firstName}</TableCell>
                 <TableCell align="left">{user.lastName}</TableCell>
                 <TableCell align="left">{user.address}</TableCell>
-                <TableCell align="left">{user.phoneNumber}</TableCell>
+                <TableCell align="left">{`+${user.phoneNumber}`}</TableCell>
                 {userRole?.role === 'super' && (
                   <TableCell align="left">
                     <Button
@@ -136,7 +136,7 @@ const StaffItem: React.FC<Props> = ({ user, onSubmit, onDelete }) => {
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="body1">
-                  Номер телефона: {user.phoneNumber}
+                  Номер телефона: {`+${user.phoneNumber}`}
                 </Typography>
               </Grid>
               {userRole?.role === 'super' && (
