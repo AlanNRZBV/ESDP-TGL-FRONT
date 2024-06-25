@@ -2,12 +2,15 @@ import {
   Alert,
   Box,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Grid,
   MenuItem,
   Stack,
   TablePagination,
   TextField,
+  Typography,
   useMediaQuery,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -94,23 +97,46 @@ const Statistics = () => {
     setPage(0);
   };
 
-  const renderMultiple = (
+  const renderTable = (
     rowsPerPage > 0
       ? shipments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       : shipments
   ).map((shipment) => (
-    <TableRow
-      key={shipment._id}
-      sx={{
-        '&:last-child td, &:last-child th': { border: 0 },
-      }}
-    >
-      <TableCell align="left">{shipment.userId.firstName}</TableCell>
-      <TableCell align="left">{shipment.status}</TableCell>
-      <TableCell align="left">{shipment.isPaid ? 'Да' : 'Нет'}</TableCell>
-      <TableCell align="left">{shipment.trackerNumber}</TableCell>
-      <TableCell align="left">{shipment.price.som}</TableCell>
+    <TableRow key={shipment._id}>
+      <TableCell>{shipment.userId.firstName}</TableCell>
+      <TableCell>{shipment.status}</TableCell>
+      <TableCell>{shipment.isPaid ? 'Да' : 'Нет'}</TableCell>
+      <TableCell>{shipment.trackerNumber}</TableCell>
+      <TableCell>{shipment.price.som}</TableCell>
     </TableRow>
+  ));
+
+  const renderCardView = (
+    rowsPerPage > 0
+      ? shipments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : shipments
+  ).map((shipment) => (
+    <Grid item key={shipment._id} xs={12}>
+      <Card>
+        <CardContent>
+          <Typography variant="h6" component="div" gutterBottom>
+            Пользователь: {shipment.userId.firstName}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Статус: {shipment.status}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Оплачено: {shipment.isPaid ? 'Да' : 'Нет'}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Номер трека: {shipment.trackerNumber}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Цена: {shipment.price.som}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Grid>
   ));
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -278,69 +304,57 @@ const Statistics = () => {
               <CircularProgress size={100} />
             </Box>
           ) : (
-            <Box sx={{ width: tableWrapperRef?.current?.clientWidth }}>
-              <TableContainer
-                component={Paper}
-                sx={{
-                  overflowX: isSmallScreen ? 'scroll' : '',
-                }}
-              >
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow sx={{ textTransform: 'uppercase' }}>
-                      <TableCell align="left" sx={{ fontWeight: 'bold' }}>
-                        Пользователь
-                      </TableCell>
-                      <TableCell align="left" sx={{ fontWeight: 'bold' }}>
-                        Статус
-                      </TableCell>
-                      <TableCell align="left" sx={{ fontWeight: 'bold' }}>
-                        Оплачено
-                      </TableCell>
-                      <TableCell align="left" sx={{ fontWeight: 'bold' }}>
-                        Номер трэка
-                      </TableCell>
-                      <TableCell align="left" sx={{ fontWeight: 'bold' }}>
-                        Цена
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {renderMultiple}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-                  <tfoot>
-                    <TableRow>
-                      <TablePagination
-                        style={{ width: '100%' }}
-                        rowsPerPageOptions={[5, 10, 20]}
-                        colSpan={6}
-                        labelRowsPerPage="Рядов на странице"
-                        count={shipments.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        slotProps={{
-                          select: {
-                            inputProps: {
-                              'aria-label': 'Показать',
-                            },
-                            native: true,
-                          },
-                        }}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        ActionsComponent={TablePaginationActions}
-                      />
-                    </TableRow>
-                  </tfoot>
-                </Table>
-              </TableContainer>
-            </Box>
+            <>
+              {isSmallScreen ? (
+                <Grid container spacing={2}>
+                  {renderCardView}
+                  {emptyRows > 0 && (
+                    <Grid item xs={12}>
+                      <Box sx={{ height: 53 * emptyRows }} />
+                    </Grid>
+                  )}
+                </Grid>
+              ) : (
+                <Box sx={{ width: tableWrapperRef?.current?.clientWidth }}>
+                  <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Пользователь</TableCell>
+                          <TableCell>Статус</TableCell>
+                          <TableCell>Оплачено</TableCell>
+                          <TableCell>Номер трека</TableCell>
+                          <TableCell>Цена</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {renderTable}
+                        {emptyRows > 0 && (
+                          <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={6} />
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              )}
+            </>
           )}
+        </Box>
+        <Box mt={2} ml={1}>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 20]}
+            colSpan={6}
+            component="div"
+            labelRowsPerPage="Рядов на странице"
+            count={shipments.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            ActionsComponent={TablePaginationActions}
+          />
         </Box>
       </Box>
     </>

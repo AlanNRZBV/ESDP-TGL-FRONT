@@ -28,7 +28,6 @@ import StaffItem from '../components/StaffItem';
 import AddStaff from './AddStaff';
 import { IStaff, UsersRequestParams } from '../../../types/types.User';
 import TablePaginationActions from '../../shipments/components/TablePaginationActions';
-import StaffTable from '../components/StaffTable';
 
 const Staff: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -161,34 +160,30 @@ const Staff: React.FC = () => {
         {employee ? (
           <>
             <Typography gutterBottom>Результат поиска</Typography>
-            <StaffTable>
-              <StaffItem
-                key={employee._id}
-                user={employee}
-                onSubmit={submitEdited}
-                onDelete={() => fetchStaffData(tabIndex)}
-              />
-            </StaffTable>
+            <StaffItem
+              key={employee._id}
+              user={employee}
+              onSubmit={submitEdited}
+              onDelete={() => fetchStaffData(tabIndex)}
+            />
             <Typography sx={{ borderBottom: '1px solid #000' }} />
           </>
         ) : (
           ''
         )}
-        <StaffTable>
-          {paginatedStaff.map((item) => (
-            <StaffItem
-              key={item._id}
-              user={item}
-              onSubmit={submitEdited}
-              onDelete={() => fetchStaffData(tabIndex)}
-            />
-          ))}
-        </StaffTable>
+        {paginatedStaff.map((item) => (
+          <StaffItem
+            key={item._id}
+            user={item}
+            onSubmit={submitEdited}
+            onDelete={() => fetchStaffData(tabIndex)}
+          />
+        ))}
         <TablePagination
           component="div"
           sx={{ ml: 'auto' }}
           rowsPerPageOptions={[5, 10, 15, 20]}
-          labelRowsPerPage="На странице"
+          labelRowsPerPage={''}
           count={users.length}
           rowsPerPage={rowsPerPage}
           page={page}
